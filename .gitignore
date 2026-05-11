@@ -1,0 +1,23 @@
+# --- SQL Server ---
+*.bak
+*.bacpac
+*.dacpac
+*.ldf
+*.mdf
+*.log
+*.mru
+*.sublime-project
+SolutionUserOptions.suo
+*.user
+*.sqlproj.user
+Backup/
+Autosave/
+
+# --- System y SO ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Data ---
+/csv_files/
+*.csv
