@@ -120,6 +120,6 @@ ORDER BY
 - **The "Business + Tech" Hybrid:** These roles don't just ask for coding. The demand for **R** and **Excel** alongside Python indicates a need for deep statistical analysis coupled with the ability to communicate findings to stakeholders.
 
 <p align="center">
-  <img src="assets/2_top_paying_roles_skills.png" width="600" alt="Top Paying Skills">
+  <img src="assets/2_top_paying_job_skills.png" width="600" alt="Top Paying Skills">
 </p>
 *Bar graph visualizing the skill frequency for the top 10 highest-paying Data Analyst roles. Visualization generated via ChatGPT based on my T-SQL query results.*
