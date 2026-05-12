@@ -76,4 +76,50 @@ SELECT AVG (salary_year_avg) FROM job_postings_fact WHERE job_title_short = 'Dat
 <p align="center">
   <img src="assets/1_top_paying_roles.png" width="600" alt="Top Paying Roles">
 </p>
-*Bar graph visualizing the salaries for the top 10 remote data analyst roles, including industry and remote average comparisons. This visualization was generated using Gemini 3 Flash based on my SQL query results.*
+*Bar graph visualizing the salaries for the top 10 remote data analyst roles, including industry and remote average comparisons. This visualization was generated using ChatGPT based on my SQL query results.*
+
+### 2. What Skills are Required for These Top-Paying Jobs?
+To understand what skills are prioritized by employers offering the highest salaries, I joined the top 10 job postings with the skills dimension table. This reveals the "Golden Stack" for high-compensation remote roles.
+
+```sql
+WITH top_ten_data_analysis_jobs AS (
+	SELECT TOP 10 
+		postings.job_id,
+		postings.job_title,
+		company_dim.name AS company_name,
+		postings.job_schedule_type,
+		postings.salary_year_avg,
+		CAST(postings.job_posted_date AS DATE) as date
+	FROM
+		job_postings_fact AS postings
+	LEFT JOIN
+		company_dim ON postings.company_id = company_dim.company_id
+	WHERE
+		job_location = 'Anywhere' AND
+		job_title_short = 'Data Analyst' AND
+		salary_year_avg IS NOT NULL
+	ORDER BY
+		postings.salary_year_avg DESC
+)
+SELECT
+	top_ten_data_analysis_jobs.*,
+	skills
+FROM
+	top_ten_data_analysis_jobs
+INNER JOIN
+	skills_job_dim AS skills_job ON  top_ten_data_analysis_jobs.job_id = skills_job.job_id
+INNER JOIN
+	skills_dim AS skills ON skills.skill_id = skills_job.skill_id 
+ORDER BY
+	salary_year_avg
+```
+### Key Insights:
+- **Technical Foundational Duo:** **SQL** (8/10) and **Python** (7/10) remain the undisputed leaders. If you want the big checks, these aren't optional; they are the baseline.
+- **Visualization Dominance:** **Tableau** (6/10) appeared significantly more often than Power BI in this specific elite bracket, suggesting a preference for Tableau in high-stakes corporate reporting and Big Tech.
+- **Modern Data Stack:** The inclusion of **Snowflake** (3/10) and **Pandas** (3/10) confirms that top-tier analysts are expected to handle cloud data warehousing and advanced data manipulation.
+- **The "Business + Tech" Hybrid:** These roles don't just ask for coding. The demand for **R** and **Excel** alongside Python indicates a need for deep statistical analysis coupled with the ability to communicate findings to stakeholders.
+
+<p align="center">
+  <img src="assets/2_top_paying_roles_skills.png" width="600" alt="Top Paying Skills">
+</p>
+*Bar graph visualizing the skill frequency for the top 10 highest-paying Data Analyst roles. Visualization generated via ChatGPT based on my T-SQL query results.*

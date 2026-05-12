@@ -29,13 +29,13 @@ SELECT
 	CAST(
 		AVG(top_ten_data_analysis_jobs.salary_year_avg) AS
 		DECIMAL (10,2)
-		)
+		) AS 'Top 10 Job Posts Yearly Salary AVG'
 FROM
 	top_ten_data_analysis_jobs;
 -- Total AVG
-SELECT AVG (salary_year_avg) FROM job_postings_fact;
+SELECT AVG (salary_year_avg) AS 'Total Yearly Salary AVG' FROM job_postings_fact;
 -- Data Analyst AVG
-SELECT AVG (salary_year_avg) FROM job_postings_fact WHERE job_title_short = 'Data Analyst'
+SELECT AVG (salary_year_avg) AS 'General Data Analyst Yearly Salary AVG' FROM job_postings_fact WHERE job_title_short = 'Data Analyst'
 
 /*
 ANALYSIS SUMMARY: TOP PAYING DATA ANALYST JOBS
