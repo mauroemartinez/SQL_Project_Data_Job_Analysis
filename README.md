@@ -76,7 +76,10 @@ SELECT AVG (salary_year_avg) FROM job_postings_fact WHERE job_title_short = 'Dat
 <p align="center">
   <img src="assets/1_top_paying_roles.png" width="600" alt="Top Paying Roles">
 </p>
-*Bar graph visualizing the salaries for the top 10 remote data analyst roles, including industry and remote average comparisons. This visualization was generated using ChatGPT based on my SQL query results.*
+
+<p align="center">
+  <em>Bar graph visualizing the salaries for the top 10 remote data analyst roles, including industry and remote average comparisons. This visualization was generated using ChatGPT based on my SQL query results.</em>
+</p>
 
 ### 2. What Skills are Required for These Top-Paying Jobs?
 To understand what skills are prioritized by employers offering the highest salaries, I joined the top 10 job postings with the skills dimension table. This reveals the "Golden Stack" for high-compensation remote roles.
@@ -122,4 +125,61 @@ ORDER BY
 <p align="center">
   <img src="assets/2_top_paying_job_skills.png" width="600" alt="Top Paying Skills">
 </p>
-*Bar graph visualizing the skill frequency for the top 10 highest-paying Data Analyst roles. Visualization generated via ChatGPT based on my T-SQL query results.*
+<p align="center">
+  <em>Bar graph visualizing the skill frequency for the top 10 highest-paying Data Analyst roles. Visualization generated via ChatGPT based on my T-SQL query results.</em>
+</p>
+
+### 3. In-Demand Skills for Data Analysts
+
+This query identifies the most frequently requested skills in the job market. While the global trend shows a high demand for Python and Tableau, my analysis indicates that core foundations like SQL and Excel remain the absolute baseline for entry.
+```sql
+-- calculate aggregated demand of skills for Data Analyst & Anywhere
+WITH total_jobs_data_analyst_anywhere AS (
+	SELECT
+		COUNT(*) AS total_demand_count
+	FROM
+		job_postings_fact
+	WHERE
+		job_title_short = 'Data Analyst' AND job_location = 'Anywhere'
+	),
+-- calculate top 10 skills for Data Analyst & Anywhere
+tops_skills_demand as (
+SELECT TOP 10
+	skills_dim.skills,
+	COUNT(job_postings_fact.job_id) AS 'Demand Count',
+	-- to calculate % we need to multiply the numerator 100 times, and it will be converted into a float number
+	-- if you do not do this, SQL will think it's an INT and truncate it to 0
+	CAST(ROUND(COUNT(job_postings_fact.job_id) * 100.0 / (SELECT total_demand_count FROM total_jobs_data_analyst_anywhere), 2) AS DECIMAL(5,2)) AS '% of Total'
+FROM job_postings_fact
+INNER JOIN
+	skills_job_dim ON skills_job_dim.job_id = job_postings_fact.job_id
+INNER JOIN
+	skills_dim ON skills_dim.skill_id = skills_job_dim.skill_id
+WHERE
+	job_title_short = 'Data Analyst' AND job_location = 'Anywhere'
+GROUP BY
+	skills_dim.skills
+ORDER BY
+	[Demand Count] DESC
+	)
+SELECT * FROM tops_skills_demand
+UNION ALL
+SELECT 'Top 10 Total', SUM([Demand Count]), SUM([% of Total]/100) 
+FROM tops_skills_demand;
+```
+### Key Insights:
+- **The Core Foundation:** **SQL** and **Excel** remain the backbone of remote Data Analyst roles, with 7,291 and 4,611 mentions respectively. This highlights that data extraction, querying, and spreadsheet analysis are still essential skills across the industry.
+
+- **The Visualization Landscape:** On a global scale, **Tableau** (3,745 mentions) shows stronger demand than **Power BI** (2,609) in remote "Anywhere" postings. However, my regional analysis for **Argentina** reveals a different trend, where Power BI (122) surpasses both Excel (118) and Tableau (86), suggesting a stronger adoption of the Microsoft ecosystem in the local market.
+
+- **The Technical Shift:** **Python** ranks as the leading programming language with 4,330 mentions, reflecting the growing expectation for analysts to handle automation, data manipulation, and more advanced analytical workflows.
+
+- **The Market Priority:** The data suggests that mastering the "Big Three" — **SQL, Python, and a BI tool (Tableau or Power BI)** — provides the strongest foundation for visibility and competitiveness in the remote Data Analyst job market.
+
+<p align="center">
+  <img src="assets/3_top_demanded_skills.png" width="600" alt="Top Demanded Skills">
+</p>
+
+<p align="center">
+  <em>Demand for the top skills in remote Data Analyst job postings.</em>
+</p>
