@@ -40,5 +40,4 @@ SELECT * FROM tops_skills_demand
 UNION ALL
 SELECT 'Top 10 Total', SUM([Demand Count]), SUM([% of Total]/100) 
 FROM tops_skills_demand;
-
 -- 2.183 top 10 skillsare required from the top 10 on each job post

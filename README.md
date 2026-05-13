@@ -183,3 +183,40 @@ FROM tops_skills_demand;
 <p align="center">
   <em>Demand for the top skills in remote Data Analyst job postings.</em>
 </p>
+
+### 4. Skills Based on Salary
+This analysis identifies the skills that offer the highest financial reward for remote Data Analyst positions. By crossing **average salary** with **demand count**, we can differentiate between high-specialization niches and industry-standard tools that justify premium pay.
+
+```sql
+SELECT TOP 25
+	skills_dim.skills,
+	ROUND(AVG(salary_year_avg), 2) AS avg_salary,
+	COUNT(job_postings_fact.job_id) AS demand_count
+FROM
+	job_postings_fact
+INNER JOIN
+	skills_job_dim ON skills_job_dim.job_id = job_postings_fact.job_id
+INNER JOIN
+	skills_dim ON skills_dim.skill_id = skills_job_dim.skill_id
+WHERE
+	job_title_short = 'Data Analyst' AND
+	salary_year_avg IS NOT NULL AND
+	job_work_from_home = 1
+GROUP BY
+	skills_dim.skills
+ORDER BY
+	avg_salary DESC;
+```
+
+### Key Insights:
+* **High Demand for Big Data & ML Skills:** The highest salaries are commanded by analysts proficient in Big Data technologies (**PySpark averaging $208,172**) and Python libraries such as **Pandas ($151,821)** and **NumPy ($143,512)**. The high frequency of the latter suggests that advanced data processing is a core competency for top-paying roles.
+* **Software Development & Engineering Crossover:** Proficiency in deployment and version control tools (**GitLab**, **Bitbucket**, **Airflow**) indicates a lucrative intersection between analytics and engineering. These skills facilitate pipeline automation, a capability highly valued by companies operating remotely.
+* **Cloud Computing Expertise:** The presence of **Databricks ($141,906)** with 10 mentions, along with **GCP ($122,500)**, underscores that cloud environment proficiency is a fundamental requirement to access upper salary brackets.
+
+<p align="center">
+  <img src="assets/4_top_paying_skills.png" width="800" alt="Top Paying Skills">
+</p>
+
+<p align="center">
+  <em>Profitability Analysis: Top 10 skills by salary and ecosystem comparison by role.</em>
+</p>
